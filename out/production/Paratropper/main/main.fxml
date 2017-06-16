@@ -20,8 +20,7 @@
    <children>
       <HBox minHeight="0.0" prefHeight="200.0" prefWidth="560.0">
          <children>
-            <Button fx:id="create_hotspot" mnemonicParsing="false" onAction="#createHotspot" text="create hotspot" />
-            <Button fx:id="wifi_connected" mnemonicParsing="false" onAction="#register" text="wifi connected" />
+            <Button fx:id="start" mnemonicParsing="false" onAction="#start" text="let's start!" />
          </children>
          <GridPane.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

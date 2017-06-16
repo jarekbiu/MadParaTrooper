@@ -1,0 +1,51 @@
+package network;
+
+import java.net.Inet4Address;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.List;
+
+/**
+ * Created by Ningchen Wang on 6/11/2017.
+ */
+public class PeerDetector {
+	private PeerDetectorServer peerDetectorServer;
+	public PeerDetector() {		
+	}
+	
+    public int Initialize(int id) throws SocketException {
+        // C++ WLAN Module Initialize
+        if (WLANDetectorWrapper.StartUpDetect(id) != 0) {
+        	return -1;
+        }
+		int ifIndex = WLANDetectorWrapper.GetLocalAddress();
+		NetworkInterface intf = NetworkInterface.getByIndex(ifIndex);
+		System.out.println(intf.getName() + ':' + intf.getDisplayName() + ' ' + 
+				intf.getIndex() + ' ' + intf.supportsMulticast());
+		List<InterfaceAddress> iNetAddresses = intf.getInterfaceAddresses();
+		for (InterfaceAddress n : iNetAddresses) {
+			if (n.getAddress() instanceof Inet4Address) {
+				System.out.println(n.getBroadcast().toString() + ' ' + n.getNetworkPrefixLength());
+				peerDetectorServer = new PeerDetectorServer((Inet4Address)n.getAddress(), (short)24);
+				peerDetectorServer.start();
+				break;
+			}
+		}
+        return 0;
+    }
+    
+    public int Stop() {
+    	peerDetectorServer.kill();
+    	WLANDetectorWrapper.StopDetect();
+		return 0;
+	}
+
+    public Inet4Address GetLocalAddress() {
+    	return peerDetectorServer.GetLocalAddress();
+    }
+    
+    public Inet4Address[] GetPeerAddresses() {
+    	return peerDetectorServer.GetPeerAddresses();
+    }
+}
