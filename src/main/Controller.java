@@ -11,6 +11,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import main.tools.BaseController;
 import main.tools.SceneManager;
+import network.ISPServer;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -53,17 +54,27 @@ public class Controller extends BaseController{
                 /**
                  * set up subnet
                  */
-                if (mm.connectWifi()!=0){
-                    Platform.runLater(()->{
-                        println(console, "failed to set up the subnet!");
-                        start.setDisable(false);
-                    });
-                    return -1;
-                };
-                Platform.runLater(() -> {
-                    // println(console, "already set up");
-                    ObservableList<Stage> stages = FXRobotHelper.getStages();
-                    stages.get(0).setScene(SceneManager.create("auth/hotspot/authhotspot.fxml"));
+                int result = mm.connectWifi();
+                Platform.runLater(()->{
+                    switch (result){
+                        case -1:
+                            /*
+                            println(console, "failed to set up the subnet!");
+                            start.setDisable(false);
+                            break;
+                            */
+                        case 1:
+                            mm.getIspServer();
+                            ObservableList<Stage> stages1 = FXRobotHelper.getStages();
+                            stages1.get(0).setScene(SceneManager.create("auth/hotspot/authhotspot.fxml"));
+                            break;
+                        case 2:
+                        case 3:
+                            mm.getIspServer();
+                            ObservableList<Stage> stages = FXRobotHelper.getStages();
+                            stages.get(0).setScene(SceneManager.create("auth/client/authclient.fxml"));
+                            break;
+                    }
                 });
                 return 0;
             }
@@ -87,8 +98,6 @@ public class Controller extends BaseController{
                 }
                 println(console, "already registered");
                 Platform.runLater(()->{
-                    ObservableList<Stage> stages = FXRobotHelper.getStages();
-                    stages.get(0).setScene(SceneManager.create("auth/client/authclient.fxml"));
                 });
                 return 0;
             }

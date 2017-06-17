@@ -9,10 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import main.MainModel;
 import main.model.Trooper;
 import main.tools.BaseController;
 import main.tools.SceneManager;
 
+import java.net.Inet4Address;
 import java.net.URL;
 import java.util.Optional;
 import java.util.Random;
@@ -27,6 +29,8 @@ public class AuthHotspotController extends BaseController{
     TableView<Trooper> iplist;
     @FXML
     Button authentication;
+    @FXML
+    Button refresh;
     @FXML
     Button back;
     @FXML
@@ -73,7 +77,7 @@ public class AuthHotspotController extends BaseController{
                     alert.setHeaderText("send rsa verification message to trooper"+ t.getId() + "?");
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.isPresent() && result.get()==ButtonType.OK){
-                        ahm.sendVerification(row.getIndex(), t);
+                        // ahm.sendVerification(row.getIndex(), t);
                         Platform.runLater(()->{
                             console.appendText("equipment"+ t.getId()+" is agreed!\n");
                         });
@@ -86,10 +90,10 @@ public class AuthHotspotController extends BaseController{
 
     public void startAuthentication(ActionEvent actionEvent){
         // send message to other troopers
-        println(console, "start authentication!!!!");
-
+        println(console, "start authentication!");
         authentication.setDisable(true);
         stop.setDisable(false);
+        ahm.startAuth();
     }
 
     public void stopAuthentication(ActionEvent actionEvent){
@@ -116,6 +120,11 @@ public class AuthHotspotController extends BaseController{
             });
         });
         t.start();
+    }
+
+    public void refresh(ActionEvent actionEvent){
+        Inet4Address[] addresses = MainModel.getPeerDetector().GetPeerAddresses();
+        ahm.refreshList(addresses);
     }
 
     public void back(ActionEvent actionEvent){

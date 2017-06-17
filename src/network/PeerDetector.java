@@ -13,10 +13,17 @@ public class PeerDetector {
 	private PeerDetectorServer peerDetectorServer;
 	public PeerDetector() {		
 	}
-	
+
+	/**
+	 *
+	 * @param id
+	 * @return -1:failure; 1:create a hotspot; 2:connect to wifi; 3:already in wifi
+	 * @throws SocketException
+	 */
     public int Initialize(int id) throws SocketException {
         // C++ WLAN Module Initialize
-        if (WLANDetectorWrapper.StartUpDetect(id) != 0) {
+		int result = WLANDetectorWrapper.StartUpDetect(id);
+		if (result < 0){
         	return -1;
         }
 		int ifIndex = WLANDetectorWrapper.GetLocalAddress();
@@ -32,7 +39,7 @@ public class PeerDetector {
 				break;
 			}
 		}
-        return 0;
+        return result;
     }
     
     public int Stop() {

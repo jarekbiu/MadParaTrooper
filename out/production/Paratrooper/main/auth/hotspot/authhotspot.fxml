@@ -29,6 +29,7 @@
             <Button fx:id="authentication" mnemonicParsing="false" onAction="#startAuthentication" text="authentication" />
             <Button fx:id="stop" mnemonicParsing="false" onAction="#stopAuthentication" text="stop" />
             <Button fx:id="choose_commander" mnemonicParsing="false" onAction="#chooseCommander" text="choose commander" />
+            <Button fx:id="refresh" mnemonicParsing="false" onAction="#refresh" text="refresh" />
             <Button fx:id="back" mnemonicParsing="false" onAction="#back" text="back" />
          </children>
          <BorderPane.margin>

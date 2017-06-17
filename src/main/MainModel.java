@@ -2,17 +2,22 @@ package main;
 
 import main.model.Trooper;
 import main.model.User;
+import network.ISPServer;
 import network.PeerDetector;
+import network.WLANDetectorWrapper;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Period;
 
 /**
  * Created by wesley on 2017/6/14.
  */
 public class MainModel {
+    private static ISPServer ispServer;
+    private static  PeerDetector peerDetector;
 
     User user;
 
@@ -37,12 +42,32 @@ public class MainModel {
     }
 
     public int connectWifi(){
-        PeerDetector peerDetector = new PeerDetector();
         try{
-            return peerDetector.Initialize(user.getId());
+            int tmp = getPeerDetector().Initialize(user.getId());
+            return tmp;
         } catch (Exception e){
             e.printStackTrace();
         }
         return -2;
+    }
+
+    /**
+     * init ispServer
+     */
+    static void initIspServer(){
+
+    }
+
+    public static ISPServer getIspServer(){
+        if (ispServer == null){
+            initIspServer();
+        }
+        return ispServer;
+    }
+    public static PeerDetector getPeerDetector(){
+        if (peerDetector == null){
+            peerDetector = new PeerDetector();
+        }
+        return peerDetector;
     }
 }

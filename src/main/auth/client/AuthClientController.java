@@ -6,9 +6,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
+import main.MainModel;
 import main.model.Trooper;
 import main.tools.BaseController;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.net.Inet4Address;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,8 @@ public class AuthClientController extends BaseController{
     TableView<Trooper> iplist;
     @FXML
     TextArea console;
+    @FXML
+    TextArea refresh;
     @FXML
     TableColumn<Trooper, String> column_id;
     @FXML
@@ -52,7 +59,7 @@ public class AuthClientController extends BaseController{
         iplist.setRowFactory(tv->{
             TableRow<Trooper> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2&&(!row.isEmpty())){
+                if (event.getClickCount() == 0&&(!row.isEmpty())){
                     Trooper t = row.getItem();
                     if (t.getState().equals(Trooper.State.AC.getValue())){
                         return;
@@ -62,7 +69,7 @@ public class AuthClientController extends BaseController{
                     alert.setHeaderText("send rsa verification message to trooper"+ t.getId() + "?");
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.isPresent() && result.get()==ButtonType.OK){
-                        acm.sendVerification(row.getIndex(), t);
+                        // acm.sendVerification(row.getIndex(), t);
                         Platform.runLater(()->{
                             console.appendText("equipment"+ t.getId()+" is agreed!\n");
                         });
@@ -73,7 +80,8 @@ public class AuthClientController extends BaseController{
         });
     }
 
-    public void openEquipment(){
-
+    public void refresh(ActionEvent actionEvent){
+        Inet4Address[] addresses = MainModel.getPeerDetector().GetPeerAddresses();
+        acm.refreshList(addresses);
     }
 }

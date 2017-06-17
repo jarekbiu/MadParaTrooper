@@ -1,7 +1,12 @@
 package main.equipment;
 
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
+import main.MainModel;
+import main.auth.AuthModel;
 import main.model.Equipment;
+
+import java.util.List;
 
 /**
  * Created by wesley shi on 2017/6/14.
@@ -12,6 +17,23 @@ public class EquipmentModel {
         equipments = equips;
     }
 
+    Callback<byte[], String> response = new Callback<byte[], String>() {
+        @Override
+        public String call(byte[] param) {
+            /**
+             * solve equipment opening broadcast
+             * if commander:
+             *   solve opening request & open equipment
+             *
+             */
+            return null;
+        }
+    };
+
+    public void loadData(){
+        // read from file...
+    }
+
     public void addItem(Equipment e){
         equipments.add(e);
     }
@@ -20,15 +42,33 @@ public class EquipmentModel {
         equipments.remove(e);
     }
 
+    /**
+     * send opening equipment request
+     * @param equipment
+     */
     public void openEquipment(Equipment equipment){
-        Thread t = new Thread(()->{
-            // send message
-            try{
-                Thread.sleep(2000);
-            } catch (InterruptedException ie){
-                ie.printStackTrace();
-            }
-        });
-        t.start();
+        if (AuthModel.isCommander()){
+            // add directly
+        } else{
+            // sending request to commander
+            Thread t = new Thread(()->{
+                // send message
+                try{
+                    Thread.sleep(2000);
+                } catch (InterruptedException ie){
+                    ie.printStackTrace();
+                }
+            });
+            t.start();
+        }
+    }
+
+    public void broadcastOpening(Equipment equipment){
+        if (!AuthModel.isCommander()){
+            // do nothing
+            return;
+        }
+        // broadcast to all troopers
+        // ....
     }
 }
